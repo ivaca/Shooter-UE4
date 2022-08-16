@@ -13,5 +13,6 @@ UCLASS()
 class BESTSHOOTER10D_API AShooterGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+public:
+	AShooterGameModeBase();
 };
