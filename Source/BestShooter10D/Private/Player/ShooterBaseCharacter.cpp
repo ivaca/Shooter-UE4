@@ -43,6 +43,7 @@ void AShooterBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	PlayerInputComponent->BindAxis("MoveRight", this, &AShooterBaseCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("LookUp", this, &AShooterBaseCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &AShooterBaseCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed,this, &AShooterBaseCharacter::Jump);
 }
 
 void AShooterBaseCharacter::MoveForward(float Value)
@@ -54,5 +55,6 @@ void AShooterBaseCharacter::MoveRight(float Value)
 {
 	AddMovementInput(GetActorRightVector(), Value);
 }
+
 
 
