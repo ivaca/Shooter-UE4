@@ -13,5 +13,5 @@ UCLASS()
 class BESTSHOOTER10D_API AShooterPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 };
