@@ -19,6 +19,7 @@ void UShooterHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Health = MaxHealth;
+	OnHealthChanged.Broadcast(Health);
 
 	AActor* ComponentOwner = GetOwner();
 	if (ComponentOwner)
@@ -31,17 +32,12 @@ void UShooterHealthComponent::BeginPlay()
 void UShooterHealthComponent::OnTakeAnyDamage(AActor* DamageActor, float Damage, const UDamageType* DamageType,
                                               AController* InstigatedBy, AActor* DamageCauser)
 {
-	Health -= Damage;
-	UE_LOG(LogHealthComponent, Warning,TEXT("Damage: %f"), Damage);
-	if(DamageType)
+	if (Damage <= 0.0f || IsDead()) return;
+	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+	OnHealthChanged.Broadcast(Health);
+	if (IsDead())
 	{
-		if(DamageType->IsA<UFireDamageType>())
-		{
-			UE_LOG(LogHealthComponent, Warning,TEXT("UFireDamageType"));
-		}
-		if(DamageType->IsA<UIceDamageType>())
-		{
-			UE_LOG(LogHealthComponent, Warning,TEXT("UIceDamageType"));
-		}
+		OnDeath.Broadcast();
+		UE_LOG(LogHealthComponent, Display, TEXT("DEAD"));
 	}
 }

@@ -7,6 +7,9 @@
 #include "ShooterHealthComponent.generated.h"
 
 
+DECLARE_MULTICAST_DELEGATE(FOnDeath)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BESTSHOOTER10D_API UShooterHealthComponent : public UActorComponent
 {
@@ -16,6 +19,12 @@ public:
 	UShooterHealthComponent();
 
 	float GetHealth() const { return Health; }
+
+	UFUNCTION(BlueprintCallable)
+	bool IsDead() const { return Health <= 0.0f; }
+
+	FOnDeath OnDeath;
+	FOnHealthChanged OnHealthChanged;
 protected:
 	virtual void BeginPlay() override;
 
@@ -28,5 +37,5 @@ private:
 
 	UFUNCTION()
 	void OnTakeAnyDamage(AActor* DamageActor, float Damage, const class UDamageType* DamageType,
-	                           class AController* InstigatedBy, AActor* DamageCauser);
+	                     class AController* InstigatedBy, AActor* DamageCauser);
 };

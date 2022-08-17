@@ -25,6 +25,8 @@ AShooterBaseCharacter::AShooterBaseCharacter()
 
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
+
+	WeaponComponent = CreateDefaultSubobject<UShooterWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -34,18 +36,19 @@ void AShooterBaseCharacter::BeginPlay()
 
 	check(HealthComponent);
 	check(HealthTextComponent);
-
+	check(GetCharacterMovement());
 	
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &AShooterBaseCharacter::OnDeath);
+	HealthComponent->OnHealthChanged.AddUObject(this, &AShooterBaseCharacter::OnHealthChanged);
+
+	LandedDelegate.AddDynamic(this, &AShooterBaseCharacter::OnGroundLanded);
 }
 
 // Called every frame 
 void AShooterBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	const auto Health = HealthComponent->GetHealth();
-	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
-
 }
 
 // Called to bind functionality to input
@@ -53,6 +56,9 @@ void AShooterBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	check(WeaponComponent);
+	check(PlayerInputComponent);
+	
 	PlayerInputComponent->BindAxis("MoveForward", this, &AShooterBaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AShooterBaseCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("LookUp", this, &AShooterBaseCharacter::AddControllerPitchInput);
@@ -60,6 +66,7 @@ void AShooterBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AShooterBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AShooterBaseCharacter::SprintStart);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AShooterBaseCharacter::SprintEnd);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UShooterWeaponComponent::Fire);
 }
 
 float AShooterBaseCharacter::GetMovementDirection() const
@@ -94,4 +101,34 @@ void AShooterBaseCharacter::SprintEnd()
 	isRunning = false;
 }
 
+void AShooterBaseCharacter::OnHealthChanged(float Health)
+{
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
 
+void AShooterBaseCharacter::OnDeath()
+{
+	UE_LOG(LogTemp, Display, TEXT("DEAD"));
+
+	PlayAnimMontage(DeathAnimMontage);
+
+	GetCharacterMovement()->DisableMovement();
+
+	SetLifeSpan(2.5f);
+	if (Controller)
+	{
+		Controller->ChangeState(NAME_Spectating);
+	}
+}
+
+void AShooterBaseCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+
+
+	if (FallVelocityZ < LandedDamageVelocity.X) return;
+
+	const auto FallDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+	TakeDamage(FallDamage, FDamageEvent(), nullptr, nullptr);
+	UE_LOG(LogTemp, Display, TEXT("Damage %f"), FallDamage);
+}

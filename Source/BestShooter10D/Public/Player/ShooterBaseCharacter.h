@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterHealthComponent.h"
+#include "Components/ShooterWeaponComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Weapon/ShooterBaseWeapon.h"
 #include "ShooterBaseCharacter.generated.h"
 
 UCLASS()
@@ -34,7 +36,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UTextRenderComponent* HealthTextComponent;
-
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	UShooterWeaponComponent* WeaponComponent;
 
 	
 public:
@@ -52,13 +56,30 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Movement")
 	float GetMovementDirection()const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Movement")
+	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Movement")
+	FVector2D LandedDamage = FVector2D(10.0f,100.0f);
+
+
 	
 	float InitialSpeed;
+
+
+	UPROPERTY(EditDefaultsOnly,  Category="Animation")
+	UAnimMontage* DeathAnimMontage;
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void SprintStart();
 	void SprintEnd();
+	void OnHealthChanged(float Health);
+	void OnDeath();
+
+	UFUNCTION()
+	void OnGroundLanded(const FHitResult& Hit);
 
 	
 };
