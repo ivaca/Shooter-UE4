@@ -31,8 +31,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Health", meta=(ClampMin="1", ClampMax="100"))
 	float MaxHealth = 100.0f;
 
-
+	
 private:
+
 	float Health = 0.0f;
 
 	UFUNCTION()

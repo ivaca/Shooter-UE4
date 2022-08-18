@@ -14,6 +14,9 @@ ADevDamageActor::ADevDamageActor()
 
 	SceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
 	SetRootComponent(SceneComponent);
+
+	SetReplicates(true);
+	
 }
 
 // Called when the game starts or when spawned

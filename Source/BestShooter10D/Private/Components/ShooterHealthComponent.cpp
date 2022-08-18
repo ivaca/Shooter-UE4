@@ -5,12 +5,15 @@
 
 #include "Dev/FireDamageType.h"
 #include "Dev/IceDamageType.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
 
 UShooterHealthComponent::UShooterHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+
 }
 
 
@@ -27,6 +30,7 @@ void UShooterHealthComponent::BeginPlay()
 		ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &UShooterHealthComponent::OnTakeAnyDamage);
 	}
 }
+
 
 
 void UShooterHealthComponent::OnTakeAnyDamage(AActor* DamageActor, float Damage, const UDamageType* DamageType,

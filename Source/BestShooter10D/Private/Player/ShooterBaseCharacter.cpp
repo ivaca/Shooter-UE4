@@ -4,6 +4,7 @@
 #include "Player/ShooterBaseCharacter.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AShooterBaseCharacter::AShooterBaseCharacter()
@@ -27,6 +28,8 @@ AShooterBaseCharacter::AShooterBaseCharacter()
 	HealthTextComponent->SetupAttachment(GetRootComponent());
 
 	WeaponComponent = CreateDefaultSubobject<UShooterWeaponComponent>("WeaponComponent");
+
+
 }
 
 // Called when the game starts or when spawned
