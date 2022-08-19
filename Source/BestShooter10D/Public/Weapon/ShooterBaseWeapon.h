@@ -14,25 +14,31 @@ class BESTSHOOTER10D_API AShooterBaseWeapon : public AActor
 public:
 	AShooterBaseWeapon();
 
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void StopFire();
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
 	FName MuzzleSocketName = "MuzzleFlashSocket";
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
+	float HitDamage = 25.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
 	float TraceMaxDistance = 1500.0f;
 
-	void MakeShot();
 
+	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
+	virtual void MakeShot();
+	
 	APlayerController* GetPlayerController() const;
-
 	bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 	FVector GetMuzzleWorldLocation() const;
-	bool GetTraceData(FVector &TraceStart, FVector& TraceEnd) const;
+	
 	void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
-private:
+
+
 };

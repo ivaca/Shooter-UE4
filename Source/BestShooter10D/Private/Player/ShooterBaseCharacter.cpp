@@ -3,6 +3,7 @@
 
 #include "Player/ShooterBaseCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -69,7 +70,10 @@ void AShooterBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AShooterBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AShooterBaseCharacter::SprintStart);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AShooterBaseCharacter::SprintEnd);
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UShooterWeaponComponent::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UShooterWeaponComponent::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UShooterWeaponComponent::StopFire);
+	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed , WeaponComponent, &UShooterWeaponComponent::NextWeapon);
+	
 }
 
 float AShooterBaseCharacter::GetMovementDirection() const
@@ -111,17 +115,17 @@ void AShooterBaseCharacter::OnHealthChanged(float Health)
 
 void AShooterBaseCharacter::OnDeath()
 {
-	UE_LOG(LogTemp, Display, TEXT("DEAD"));
-
+	
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 	PlayAnimMontage(DeathAnimMontage);
-
 	GetCharacterMovement()->DisableMovement();
-
 	SetLifeSpan(2.5f);
+	
 	if (Controller)
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
+	WeaponComponent->StopFire();
 }
 
 void AShooterBaseCharacter::OnGroundLanded(const FHitResult& Hit)

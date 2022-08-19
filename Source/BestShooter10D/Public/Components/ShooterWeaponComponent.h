@@ -16,21 +16,43 @@ class BESTSHOOTER10D_API UShooterWeaponComponent : public UActorComponent
 public:
 	UShooterWeaponComponent();
 
-	void Fire();
+	void StartFire();
+	void StopFire();
+	void NextWeapon();
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
-	TSubclassOf<AShooterBaseWeapon> WeaponClass;
+	TArray<TSubclassOf<AShooterBaseWeapon>> WeaponClasses;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
-	FName WeaponAttachPointName = "WeaponSocket";
+	FName WeaponEquipSocketName = "WeaponSocket";
 
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UAnimMontage* EquipAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
+	FName WeaponArmorySocketName = "ArmorySocket";
 private:
-	void SpawnWeapon();
+	void SpawnWeapons();
 
 	UPROPERTY()
 	AShooterBaseWeapon* CurrentWeapon = nullptr;
+
+	void EquipWeapon(int32 WeaponIndex);
+	void AttachWeaponToSocket(AShooterBaseWeapon* BaseWeapon, USceneComponent* SceneComponent, const FName& SocketName);
+
+	bool EquipAnimInProgress = false;
+	bool CanFire() const;
+	bool CanEquip() const;
+	int32 CurrentWeaponIndex = 0;
+	UPROPERTY()
+	TArray<AShooterBaseWeapon*> Weapons;
+	void PlayAnimMontage(UAnimMontage* Animation);
+
+	void InitAnimations();
+	void OnEquipedFinished(USkeletalMeshComponent* MeshComponent);
 };
