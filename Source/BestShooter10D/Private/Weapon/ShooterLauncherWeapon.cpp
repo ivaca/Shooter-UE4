@@ -11,7 +11,7 @@ void AShooterLauncherWeapon::StartFire()
 
 void AShooterLauncherWeapon::MakeShot()
 {
-	if (!GetWorld()) return;
+	if (!GetWorld() || IsAmmoEmpty()) return;
 
 	FVector TraceStart, TraceEnd;
 	if (!GetTraceData(TraceStart, TraceEnd)) return;
@@ -19,7 +19,7 @@ void AShooterLauncherWeapon::MakeShot()
 	FHitResult HitResult;
 
 	MakeHit(HitResult, TraceStart, TraceEnd);
- 
+
 	const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
 	const FVector Direction = (EndPoint - GetMuzzleWorldLocation()).GetSafeNormal();
 
@@ -31,4 +31,5 @@ void AShooterLauncherWeapon::MakeShot()
 		Projectile->SetOwner(GetOwner());
 		Projectile->FinishSpawning(SpawnTransform);
 	}
+	DecreaseAmmo();
 }

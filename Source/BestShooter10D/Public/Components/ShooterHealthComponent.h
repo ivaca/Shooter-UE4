@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "ShooterCoreTypes.h"
 #include "ShooterHealthComponent.generated.h"
 
 
-DECLARE_MULTICAST_DELEGATE(FOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BESTSHOOTER10D_API UShooterHealthComponent : public UActorComponent
@@ -20,9 +20,13 @@ public:
 
 	float GetHealth() const { return Health; }
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Health")
 	bool IsDead() const { return Health <= 0.0f; }
 
+	UFUNCTION(BlueprintCallable, Category="Health")
+	float GetHealthPercent()const{return  Health/MaxHealth;};
+
+	
 	FOnDeath OnDeath;
 	FOnHealthChanged OnHealthChanged;
 protected:

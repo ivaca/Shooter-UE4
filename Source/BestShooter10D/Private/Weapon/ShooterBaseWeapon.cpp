@@ -24,22 +24,22 @@ void AShooterBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponMesh);
+	checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets cannot be 0 or less"));
+	checkf(DefaultAmmo.Clips > 0, TEXT("Clips cannot be 0 or less"));
+	CurrentAmmo = DefaultAmmo;
 }
 
 void AShooterBaseWeapon::MakeShot()
 {
-
 }
 
 
 void AShooterBaseWeapon::StartFire()
 {
-	
 }
 
 void AShooterBaseWeapon::StopFire()
 {
-	
 }
 
 APlayerController* AShooterBaseWeapon::GetPlayerController() const
@@ -71,7 +71,7 @@ bool AShooterBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) co
 	if (!GetPlayerViewPoint(ViewLocation, ViewRotation)) return false;
 
 	TraceStart = ViewLocation;
-	
+
 	const FVector ShootDirection = ViewRotation.Vector();
 	TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
 	return true;
@@ -85,4 +85,55 @@ void AShooterBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStar
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility,
 	                                     CollisionQueryParams);
+}
+
+void AShooterBaseWeapon::DecreaseAmmo()
+{
+	if (CurrentAmmo.Bullets == 0)
+	{
+		return;
+	}
+	--CurrentAmmo.Bullets;
+	LogAmmo();
+	if (IsClipEmpty() && !IsAmmoEmpty())
+	{
+		StopFire();
+		OnClipEmpty.Broadcast();
+	}
+}
+
+void AShooterBaseWeapon::ChangeClip()
+{
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+	if (!CurrentAmmo.Infinite)
+	{
+		if (CurrentAmmo.Clips == 0)
+		{
+			return;
+		}
+		--CurrentAmmo.Clips;
+	}
+	UE_LOG(LogBaseWeapon, Display, TEXT("Change Clip called"));
+}
+
+bool AShooterBaseWeapon::CanReload() const
+{
+	return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
+}
+
+void AShooterBaseWeapon::LogAmmo()
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
+	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
+	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
+}
+
+bool AShooterBaseWeapon::IsAmmoEmpty() const
+{
+	return !CurrentAmmo.Infinite && !CurrentAmmo.Clips && IsClipEmpty();
+}
+
+bool AShooterBaseWeapon::IsClipEmpty() const
+{
+	return !CurrentAmmo.Bullets;
 }

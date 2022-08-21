@@ -8,7 +8,11 @@
 
 void AShooterRifleWeapon::MakeShot()
 {
-	if (!GetWorld()) return;
+	if (!GetWorld() || IsAmmoEmpty())
+	{
+		StopFire();
+		return;
+	}
 
 	FVector TraceStart, TraceEnd;
 	if (!GetTraceData(TraceStart, TraceEnd)) return;
@@ -28,13 +32,14 @@ void AShooterRifleWeapon::MakeShot()
 		              1.5f);
 		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 24, FColor::Blue, false, 5.0f);
 	}
+	DecreaseAmmo();
 }
 
 
 void AShooterRifleWeapon::StartFire()
 {
-	MakeShot();
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AShooterRifleWeapon::MakeShot, TimerRate, true);
+	MakeShot();
 }
 
 void AShooterRifleWeapon::StopFire()

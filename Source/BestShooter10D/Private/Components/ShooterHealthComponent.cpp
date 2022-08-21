@@ -12,8 +12,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
 UShooterHealthComponent::UShooterHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
-
 }
 
 
@@ -21,6 +19,7 @@ void UShooterHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(MaxHealth> 0);
 	Health = MaxHealth;
 	OnHealthChanged.Broadcast(Health);
 
@@ -30,7 +29,6 @@ void UShooterHealthComponent::BeginPlay()
 		ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &UShooterHealthComponent::OnTakeAnyDamage);
 	}
 }
-
 
 
 void UShooterHealthComponent::OnTakeAnyDamage(AActor* DamageActor, float Damage, const UDamageType* DamageType,
