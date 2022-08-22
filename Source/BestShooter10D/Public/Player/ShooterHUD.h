@@ -13,5 +13,10 @@ UCLASS()
 class BESTSHOOTER10D_API AShooterHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+public:
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite,Category="UI")
+	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
+
+	virtual void BeginPlay() override;
 };

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 
 #include "ShooterCoreTypes.h"
+#include "Weapon/ShooterBaseWeapon.h"
 #include "ShooterWeaponComponent.generated.h"
 
 
@@ -18,11 +19,15 @@ class BESTSHOOTER10D_API UShooterWeaponComponent : public UActorComponent
 
 public:
 	UShooterWeaponComponent();
-	
+
 	void StartFire();
 	void StopFire();
 	void NextWeapon();
 	void Reload();
+
+	bool GetWeaponUIData(FWeaponUIData& UIData) const;
+	bool GetAmmoUIData(FAmmoData& AmmoData) const;
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,7 +50,7 @@ private:
 
 	void OnEmptyClip();
 	void ChangeClip();
-	
+
 	UPROPERTY()
 	AShooterBaseWeapon* CurrentWeapon = nullptr;
 
@@ -70,6 +75,4 @@ private:
 	void InitAnimations();
 	void OnEquipedFinished(USkeletalMeshComponent* MeshComponent);
 	void OnReloadFinished(USkeletalMeshComponent* MeshComponent);
-
-	
 };

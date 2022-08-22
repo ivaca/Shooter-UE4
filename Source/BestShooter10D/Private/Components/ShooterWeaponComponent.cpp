@@ -148,7 +148,7 @@ void UShooterWeaponComponent::InitAnimations()
 
 	for (auto Data : WeaponData)
 	{
-		auto ReloadFinishedNotify =  AnimUtils::FindNotifyByClass<UShooterReloadFinishedAN>(Data.ReloadAM);
+		auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<UShooterReloadFinishedAN>(Data.ReloadAM);
 		if (!ReloadFinishedNotify) { checkNoEntry(); }
 
 		ReloadFinishedNotify->OnNotified.AddUObject(this, &UShooterWeaponComponent::OnReloadFinished);
@@ -187,4 +187,24 @@ void UShooterWeaponComponent::NextWeapon()
 void UShooterWeaponComponent::Reload()
 {
 	ChangeClip();
+}
+
+bool UShooterWeaponComponent::GetWeaponUIData(FWeaponUIData& UIData) const
+{
+	if (CurrentWeapon)
+	{
+		UIData = CurrentWeapon->GetUIData();
+		return true;
+	}
+	return false;
+}
+
+bool UShooterWeaponComponent::GetAmmoUIData(FAmmoData& AmmoData) const
+{
+	if (CurrentWeapon)
+	{
+		AmmoData = CurrentWeapon->GetAmmoData();
+		return true;
+	}
+	return false;
 }
