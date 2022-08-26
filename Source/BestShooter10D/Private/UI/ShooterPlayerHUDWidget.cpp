@@ -10,7 +10,7 @@
 float UShooterPlayerHUDWidget::GetHealthPercent() const
 {
 
-	const auto HealthComponent = ShooterUtils::GetShooterComponent<UShooterHealthComponent>(GetOwningPlayerPawn());
+	const auto HealthComponent = ShooterUtils::GetPlayerComponent<UShooterHealthComponent>(GetOwningPlayerPawn());
 	if (!HealthComponent) return 0.0f;
 
 	return HealthComponent->GetHealthPercent();
@@ -18,7 +18,7 @@ float UShooterPlayerHUDWidget::GetHealthPercent() const
 
 bool UShooterPlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData) const
 {
-	auto WeaponComponent = ShooterUtils::GetShooterComponent<UShooterWeaponComponent>(GetOwningPlayerPawn());
+	auto WeaponComponent = ShooterUtils::GetPlayerComponent<UShooterWeaponComponent>(GetOwningPlayerPawn());
 	if (!WeaponComponent) return false;
 
 	return WeaponComponent->GetWeaponUIData(UIData);
@@ -26,7 +26,7 @@ bool UShooterPlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData) const
 
 bool UShooterPlayerHUDWidget::GetAmmoUIData(FAmmoData& AmmoData) const
 {
-	auto WeaponComponent = ShooterUtils::GetShooterComponent<UShooterWeaponComponent>(GetOwningPlayerPawn());
+	auto WeaponComponent = ShooterUtils::GetPlayerComponent<UShooterWeaponComponent>(GetOwningPlayerPawn());
 	if (!WeaponComponent) return false;
 
 	return WeaponComponent->GetAmmoUIData(AmmoData);
@@ -34,7 +34,7 @@ bool UShooterPlayerHUDWidget::GetAmmoUIData(FAmmoData& AmmoData) const
 
 bool UShooterPlayerHUDWidget::IsPlayerAlive() const
 {
-	const auto HealthComponent = ShooterUtils::GetShooterComponent<UShooterHealthComponent>(GetOwningPlayerPawn());
+	const auto HealthComponent = ShooterUtils::GetPlayerComponent<UShooterHealthComponent>(GetOwningPlayerPawn());
 	if (!HealthComponent) return false;
 	
 	return !HealthComponent->IsDead();

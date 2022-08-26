@@ -27,7 +27,7 @@ public:
 
 	bool GetWeaponUIData(FWeaponUIData& UIData) const;
 	bool GetAmmoUIData(FAmmoData& AmmoData) const;
-	
+	bool TryToAddAmmo(TSubclassOf<AShooterBaseWeapon> WeaponType, int32 ClipsAmount);
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,7 +48,7 @@ protected:
 private:
 	void SpawnWeapons();
 
-	void OnEmptyClip();
+	void OnEmptyClip(AShooterBaseWeapon* Weapon);
 	void ChangeClip();
 
 	UPROPERTY()

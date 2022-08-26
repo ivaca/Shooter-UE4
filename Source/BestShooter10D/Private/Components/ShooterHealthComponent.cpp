@@ -15,6 +15,26 @@ UShooterHealthComponent::UShooterHealthComponent()
 }
 
 
+bool UShooterHealthComponent::TryToAddHealth(float HealthAmount)
+{
+	if (IsDead() || IsHealthFull()) return false;
+	SetHealth(HealthAmount);
+
+	return true;
+}
+
+bool UShooterHealthComponent::IsHealthFull() const
+{
+	return Health == MaxHealth;
+}
+
+void UShooterHealthComponent::SetHealth(float HealthAmount)
+{
+	if (HealthAmount <= 0) return;
+	Health = FMath::Clamp(HealthAmount + Health, Health, MaxHealth);
+	OnHealthChanged.Broadcast(Health);
+}
+
 void UShooterHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();

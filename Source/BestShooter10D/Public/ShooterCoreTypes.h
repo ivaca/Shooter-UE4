@@ -1,9 +1,10 @@
 ﻿#pragma once
+
 #include "ShooterCoreTypes.generated.h"
 
 
 class AShooterBaseWeapon;
-DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AShooterBaseWeapon*)
 
 USTRUCT(BlueprintType)
 struct FAmmoData

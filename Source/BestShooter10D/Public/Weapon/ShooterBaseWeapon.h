@@ -26,11 +26,14 @@ public:
 	FWeaponUIData GetUIData() const { return UIData; }
 	FAmmoData GetAmmoData() const { return CurrentAmmo; }
 
+	bool TryToAddAmmo(int32 ClipsAmount); 
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
 	USkeletalMeshComponent* WeaponMesh;
 
+	bool IsAmmoFull() const;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
 	FName MuzzleSocketName = "MuzzleFlashSocket";
 

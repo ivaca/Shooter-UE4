@@ -5,7 +5,7 @@ class ShooterUtils
 {
 public:
 	 template<typename T>
-	static T* GetShooterComponent(APawn* PlayerPawn)
+	static T* GetPlayerComponent(APawn* PlayerPawn)
 	 {
 	 	if (!PlayerPawn) return nullptr;
 	 	const auto Component = PlayerPawn->GetComponentByClass(T::StaticClass()); 
