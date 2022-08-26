@@ -5,15 +5,13 @@
 #include "CoreMinimal.h"
 #include "ShooterCoreTypes.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ShooterHealthComponent.h"
-#include "Components/ShooterWeaponComponent.h"
-#include "ShooerPlayerHUDWidget.generated.h"
+#include "ShooterPlayerHUDWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BESTSHOOTER10D_API UShooerPlayerHUDWidget : public UUserWidget
+class BESTSHOOTER10D_API UShooterPlayerHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -33,6 +31,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category="UI")
 	bool IsPlayerSpectating() const;
 private:
-	UShooterHealthComponent* GetHealthComponent() const;
-	UShooterWeaponComponent* GetWeaponComponent() const;
+
 };
